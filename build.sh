@@ -14,9 +14,8 @@ fi
   t=$k/packages
 
 # Kernel Version
-BASE_VER="KANGAROO"
-VER=".M7.v060"
-VERSION=$BASE_VER$VER
+VER="KANGAROO.M7.v060"
+VERSION=$VER
 
 # localversion
 export LOCALVERSION=""`echo $VER`

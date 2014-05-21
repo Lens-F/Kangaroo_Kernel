@@ -1,5 +1,3 @@
-### This is a really pretty picture thanks janarp for the help :) ###
-ui_print("         AnyKernel Updater by Koush       ");
 ui_print(" ");
 ui_print(" ");
 ui_print("******************************************");
@@ -15,38 +13,49 @@ ui_print("*                                        *");
 ui_print("******************************************");
 show_progress(0.500000, 0);
 
-### Mounting system and extract modules ###
-ui_print("Mounting /system...");
-mount("ext4", "EMMC", "/dev/block/mmcblk0p37, "/system");
-ui_print(" ");
-ui_print("Extracting System Files...");
-delete_recursive("/system/lib/modules");
-ui_print(" ");
-package_extract_dir("system", "/system");
-set_perm_recursive(0, 0, 0755, 0755, "/system/etc/init.d");
-set_perm_recursive(0, 0, 0755, 0644, "/system/lib/modules");
-show_progress(0.200000, 0);
-
-### Repack zimage with existing ramdisk #####
-ui_print("Packing existing ramdisk with ");
-ui_print("Kangaroo zimage.. ");
+run_program("/sbin/busybox", "mount", "/system");
+ui_print("Cleaning out old jumk");
 package_extract_dir("kernel", "/tmp");
-set_perm(0, 0, 0777, "/tmp/mkbootimg.sh");
+delete("/system/etc/init.d/01-h2w");
+delete("/system/etc/init.d/01-f2s");
+delete("/system/etc/init.d/01-f2w");
+delete("/system/etc/init.d/01-f2ws");
+delete("/system/etc/init.d/01-f2wt");
+delete("/system/etc/init.d/01-p2w");
+delete("/system/etc/init.d/01-pwp");
+delete("/system/etc/init.d/01-therm");
+delete("/system/etc/init.d/01-menu");
+delete("/system/etc/init.d/01-blinkbuttons");
+delete("/system/etc/init.d/thoravukk");
+delete("/system/etc/init.d/99elementalx");
+delete("/system/etc/init.d/99Lemur");
+delete("/system/etc/init.d/89elementalx");
+delete("/system/etc/init.d/99elementalx~");
+delete("/system/etc/init.d/99bulletproof");
+delete("/system/etc/init.d/30sweep2wake");
+delete("/system/etc/elementalx.conf");
+delete("/system/etc/lemur.conf");
+delete("/system/etc/GruesomeTweaks");
+delete_recursive("/system/lib/modules/");
+ui_print("Installing system files");
+ui_print("");
+ui_print("");
+package_extract_dir("system", "/system");
+set_perm_recursive(0, 0, 0755, 0644, "/system/lib/modules");
+ui_print("Unmounting system");
+ui_print("");
+ui_print("");
+unmount("/system");
+ui_print("Adding new kernel to boot.img");
+ui_print("");
+ui_print("");
+set_perm(0, 0, 0755, "/tmp/mkbootimg.sh");
 set_perm(0, 0, 0777, "/tmp/mkbootimg");
 set_perm(0, 0, 0777, "/tmp/unpackbootimg");
-set_perm(0, 0, 0777, "/tmp/busybox");
-show_progress(0.200000, 10);
-
-### Install the kernel ###
-ui_print("Installing the Kangaroo..");
-ui_print(" ");
-run_program("/tmp/busybox", "dd", "if=/dev/block/mmcblk0p35, "of=/tmp/boot.img");
+run_program("/sbin/busybox", "dd", "if=/dev/block/mmcblk0p35", "of=/tmp/boot.img");
 run_program("/tmp/unpackbootimg", "-i", "/tmp/boot.img", "-o", "/tmp/");
 run_program("/tmp/mkbootimg.sh");
-run_program("/tmp/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/mmcblk0p33");
-show_progress(0.100000, 0);
-
-### Unmount then finish! ###
+run_program("/sbin/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/mmcblk0p35");
 unmount("/system");
 ui_print("******************************************");
 ui_print("*                                        *");
