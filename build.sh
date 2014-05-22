@@ -18,7 +18,7 @@ VER="KANGAROO.M7.v060"
 VERSION=$VER
 
 # localversion
-export LOCALVERSION=""`echo $VER`
+export LOCALVERSION="-"`echo $VER`
 
 # Clean
      make clean
@@ -62,7 +62,7 @@ make -j`grep 'processor' /proc/cpuinfo | wc -l` CROSS_COMPILE=$TOOLCHAIN #>> com
    done
 
 # Version Number to add to zip
-  z="${VERSION}"
+  z=${VERSION}
      cd $k/out/$c/
        7z a "$z.zip"
          mv $z.zip $k/out/$z.zip
